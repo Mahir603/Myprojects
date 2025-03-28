@@ -1,0 +1,25 @@
+import requests
+
+def get_exchange_rate(base_currency, target_currency):
+    url = f"https://api.exchangerate-api.com/v4/latest/{base_currency}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return data["rates"].get(target_currency, None)
+    return None
+
+def convert_currency(amount, base_currency, target_currency):
+    rate = get_exchange_rate(base_currency, target_currency)
+    if rate:
+        return round(amount * rate, 2)
+    else:
+        return "Invalid currency or API error."
+
+if __name__ == "__main__":
+    print("Welkom bij de valuta converter!")
+    base = input("Voer de basisvaluta in (bijv. EUR, USD): ").upper()
+    target = input("Voer de doelvaluta in (bijv. GBP, JPY): ").upper()
+    amount = float(input("Voer het bedrag in: "))
+    
+    result = convert_currency(amount, base, target)
+    print(f"{amount} {base} is gelijk aan {result} {target}")
